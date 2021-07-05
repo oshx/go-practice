@@ -1,28 +1,22 @@
 package main
 
 import (
-	"fmt"
-	"log"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"net/http"
 )
 
-func helloHandler(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/hello" {
-		http.Error(w, "404 Not Found", http.StatusNotFound)
-		return
-	}
-	if r.Method != "GET" {
-		http.Error(w, "405 Method Not Allowed", http.StatusMethodNotAllowed)
-		return
-	}
+func main() {
+	e := echo.New()
 
-	fmt.Fprintf(w, "Welcome to the Page \"Hello\"!")
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
+
+	e.GET("/", hello)
+
+	e.Logger.Fatal(e.Start(":8080"))
 }
 
-func main() {
-	http.HandleFunc("/hello", helloHandler)
-	fmt.Printf("Server at port 8080\n")
-	if err := http.ListenAndServe(":8080", nil); err != nil {
-		log.Fatal(err)
-	}
+func hello(c echo.Context) error {
+	return c.String(http.StatusOK, "Hello, Echo!")
 }
