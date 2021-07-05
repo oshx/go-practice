@@ -1,4 +1,4 @@
-module exmaple.com/hello
+module go-practice/oshx
 
 go 1.16
 
